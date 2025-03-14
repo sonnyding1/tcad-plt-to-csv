@@ -1,6 +1,6 @@
 # TCAD PLT to CSV
 
-This project is a Streamlit web application that allows users to upload `.plt` files from Sentaurus TCAD, and receive a converted CSV file.
+This project is a Streamlit web application that allows users to upload `.plt` files from Sentaurus TCAD, and receive a converted CSV file. It's live on streamlit: [https://tcad-plt2csv.streamlit.app/](https://tcad-plt2csv.streamlit.app/)
 
 ## Installation
 
