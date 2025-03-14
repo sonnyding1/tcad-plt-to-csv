@@ -7,7 +7,7 @@ This project is a Streamlit web application that allows users to upload `.plt` f
 To set up the project, clone the repository and install the required dependencies:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/sonnyding1/tcad-plt2csv.git
 cd tcad-plt2csv
 python -m venv venv
 source venv/bin/activate  # On Windows use `venv\Scripts\activate`
