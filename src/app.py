@@ -7,6 +7,12 @@ import zipfile
 import io
 
 def main():
+    # mechanism to prevent widgets' keys and values from disappearing on landing a new page
+    # see "interrupting the widget cleanup process"
+    # https://docs.streamlit.io/develop/concepts/architecture/widget-behavior
+    for key in st.session_state.keys():
+        st.session_state[key] = st.session_state[key]
+
     st.title("Sentaurus TCAD PLT to CSV")
     
     # Initialize session state for uploaded_files and processed_files

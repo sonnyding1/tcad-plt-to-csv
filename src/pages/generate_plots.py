@@ -10,9 +10,27 @@ from processing import process_file
 DEFAULT_PLOT_WIDTH = 10
 DEFAULT_PLOT_HEIGHT = 6
 
+def update_x_label():
+    st.session_state["x_label"] = st.session_state["x_axis"]
+
+def update_y_label():
+    st.session_state["y_label"] = st.session_state["y_axis"]
+
 def main():
+    # mechanism to prevent widgets' keys and values from disappearing on landing a new page
+    # see "interrupting the widget cleanup process"
+    # https://docs.streamlit.io/develop/concepts/architecture/widget-behavior
+    for key in st.session_state.keys():
+        st.session_state[key] = st.session_state[key]
+
     st.title("Generate plots from PLT")
     st.write("Or, if you'd like to generate a plot directly from PLT files, please use this page.")
+
+    st.write(st.session_state)
+
+    # a mechanism to declare the keys manually, such that they don't disappear when widgets disappear
+    for key in st.session_state.keys():
+        st.session_state[key] = st.session_state[key]
 
     # File upload for .plt files
     uploaded_files = st.file_uploader("Upload .plt files", type=["plt"], accept_multiple_files=True)
@@ -42,14 +60,14 @@ def main():
     if processed_data:
         # Allow users to select which files to plot
         all_filenames = [output["filename"] for output in processed_data]
-        selected_files = st.multiselect("Select files to plot", all_filenames, default=all_filenames)
+        selected_files = st.multiselect("Select files to plot", all_filenames, default=all_filenames, key="selected_files")
         
         # Use an expander to wrap custom labels
         with st.expander("Customize Legend Labels"):
             # Create a dictionary to store custom labels
             custom_labels = {}
             for filename in selected_files:
-                custom_labels[filename] = st.text_input(f"Legend label for {filename}:", value=filename)
+                custom_labels[filename] = st.text_input(f"Legend label for {filename}:", value=filename, key=f"custom_labels_{filename}")
         
         # Determine available columns
         available_columns = set()
@@ -59,21 +77,21 @@ def main():
         available_columns = list(available_columns)
         
         # Let users choose x and y axis
-        x_axis = st.selectbox("Select X axis", available_columns)
-        y_axis = st.selectbox("Select Y axis", available_columns)
+        x_axis = st.selectbox("Select X axis", available_columns, key="x_axis", on_change=update_x_label)
+        y_axis = st.selectbox("Select Y axis", available_columns, key="y_axis", on_change=update_y_label)
 
         # Allow users to toggle log scale
-        log_scale = st.checkbox("Log scale for Y axis", value=False)
+        log_scale = st.checkbox("Log scale for Y axis", value=False, key="log_scale")
         
         # Customization options
         with st.expander("Plot Customization"):
-            plot_width = st.number_input("Plot Width (inches)", value=DEFAULT_PLOT_WIDTH)
-            plot_height = st.number_input("Plot Height (inches)", value=DEFAULT_PLOT_HEIGHT)
+            plot_width = st.number_input("Plot Width (inches)", value=DEFAULT_PLOT_WIDTH, key="plot_width")
+            plot_height = st.number_input("Plot Height (inches)", value=DEFAULT_PLOT_HEIGHT, key="plot_height")
 
             # Allow users to customize axis labels and title
-            x_label = st.text_input("X axis label", value=x_axis)
-            y_label = st.text_input("Y axis label", value=y_axis)
-            plot_title = st.text_input("Plot title", value=f"Plot of {x_axis} vs {y_axis}")
+            x_label = st.text_input("X axis label", value=x_axis, key="x_label")
+            y_label = st.text_input("Y axis label", value=y_axis, key="y_label")
+            plot_title = st.text_input("Plot title", value=f"Plot of {x_axis} vs {y_axis}", key="plot_title")
         
         # Create the Matplotlib plot
         fig, ax = plt.subplots(figsize=(plot_width, plot_height))
@@ -100,7 +118,7 @@ def main():
         # Set the y-axis scale to logarithmic if log_scale is True
         if log_scale:
             ax.set_yscale('log')
-            ax.set_ylim(bottom=1e-12)  # Set a lower limit for the y-axis
+            # ax.set_ylim(bottom=1e-12)  # Set a lower limit for the y-axis
 
         
         ax.set_xlabel(x_label)

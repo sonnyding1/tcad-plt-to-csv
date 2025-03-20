@@ -3,6 +3,12 @@ import pandas as pd
 import os
 
 def main():
+    # mechanism to prevent widgets' keys and values from disappearing on landing a new page
+    # see "interrupting the widget cleanup process"
+    # https://docs.streamlit.io/develop/concepts/architecture/widget-behavior
+    for key in st.session_state.keys():
+        st.session_state[key] = st.session_state[key]
+
     st.title("Edit Data")
     st.write("Edit your processed dataframes here.")
 
