@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import tempfile
 from processing import process_file
+import io
 
 # Default plot size
 DEFAULT_PLOT_WIDTH = 10
@@ -12,9 +13,11 @@ DEFAULT_PLOT_HEIGHT = 6
 
 def update_x_label():
     st.session_state["x_label"] = st.session_state["x_axis"]
+    st.session_state["plot_title"] = f"Plot of {st.session_state["x_axis"]} vs {st.session_state["y_axis"]}"
 
 def update_y_label():
     st.session_state["y_label"] = st.session_state["y_axis"]
+    st.session_state["plot_title"] = f"Plot of {st.session_state["x_axis"]} vs {st.session_state["y_axis"]}"
 
 def main():
     # mechanism to prevent widgets' keys and values from disappearing on landing a new page
@@ -26,7 +29,7 @@ def main():
     st.title("Generate plots from PLT")
     st.write("Or, if you'd like to generate a plot directly from PLT files, please use this page.")
 
-    st.write(st.session_state)
+    # st.write(st.session_state)
 
     # a mechanism to declare the keys manually, such that they don't disappear when widgets disappear
     for key in st.session_state.keys():
@@ -129,6 +132,16 @@ def main():
         
         # Display the Matplotlib plot in Streamlit
         st.pyplot(fig)
+
+        # Add a button to copy the figure
+        buf = io.BytesIO()
+        fig.savefig(buf, format="png")
+        st.download_button(
+            label="Download Plot",
+            data=buf.getvalue(),
+            file_name="plot.png",
+            mime="image/png",
+        )
     else:
         st.write("No processed data available. Please upload PLT files first.")
 
