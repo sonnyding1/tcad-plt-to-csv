@@ -21,11 +21,9 @@ narwhals==1.30.0
 numpy==2.2.3
 packaging==24.2
 pandas==2.2.3
-pasteboard==0.3.3
 pillow==11.1.0
 protobuf==5.29.3
 pyarrow==19.0.1
-pyclip==0.7.0
 pydeck==0.9.1
 pyparsing==3.2.1
 python-dateutil==2.9.0.post0
