@@ -36,14 +36,16 @@ import re
 import os
 
 def to_snake_case(s):
+    s = re.sub(r'[()\s,.-]+', '_', s)
     s = re.sub(r'([A-Z])', r'_\1', s)
     s = s.replace(' ', '_')
     s = s.replace('__', '_')
+    s = s.strip('_')
     return s.lower()
 
 def process_file(file_obj, output_dir):
     data = file_obj.read().decode('utf-8')
-    headers = re.findall(r'"([a-zA-Z0-9 .]+)"', data)
+    headers = re.findall(r'"([a-zA-Z0-9 .(),-]+)"', data)
     headers = [to_snake_case(header) for header in headers]
     data = data.split('Data {')[1].split('}')[0].split()
     data = np.array(data, dtype=float)
